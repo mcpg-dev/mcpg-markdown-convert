@@ -7,7 +7,13 @@
 //! the plugin produces, with no diff for a reviewer to see.
 //!
 //! This module records the output. Each case renders a fixture and compares
-//! it byte-for-byte with a file under `tests/golden/`.
+//! it byte-for-byte with a file under `src/golden/`.
+//!
+//! The corpus lives under `src/` rather than `tests/` because this module is
+//! compiled into the library and embeds those files at compile time. The
+//! open-source mirror ships `src/` and excludes `tests/`, so goldens kept
+//! beside the integration tests would leave the published crate referencing
+//! files it does not carry — it fails to compile for anyone but us.
 //!
 //! **It is not a correctness oracle.** It captures today's behaviour,
 //! including anything currently wrong. Its value is that changing that
@@ -25,7 +31,7 @@
 //! ## Why the goldens are `include_str!`, not read from disk
 //!
 //! Sandboxed test runners execute the binary somewhere other than the source
-//! tree, so `CARGO_MANIFEST_DIR` does not lead back to `tests/golden` and a
+//! tree, so `CARGO_MANIFEST_DIR` does not lead back to `src/golden` and a
 //! runtime read finds nothing. Embedding the files at compile time sidesteps
 //! that entirely. The update path does need a real path, so it goes through
 //! `option_env!` and simply does not run where the variable is absent —
@@ -101,7 +107,7 @@ fn check(case: &Case) {
         && let Some(dir) = option_env!("CARGO_MANIFEST_DIR")
     {
         let path = std::path::Path::new(dir)
-            .join("tests/golden")
+            .join("src/golden")
             .join(format!("{}.md", case.name));
         std::fs::create_dir_all(path.parent().expect("has a parent")).expect("create golden dir");
         std::fs::write(&path, &actual).expect("write golden");
@@ -163,7 +169,7 @@ macro_rules! case {
             filename: $filename,
             input: $input,
             options: $options,
-            golden: include_str!(concat!("../tests/golden/", $name, ".md")),
+            golden: include_str!(concat!("golden/", $name, ".md")),
         }
     };
 }

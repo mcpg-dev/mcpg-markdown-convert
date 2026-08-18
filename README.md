@@ -112,7 +112,7 @@ corpus — zip bombs, XXE, billion laughs, deep nesting, lying size headers,
 truncated containers, compound files that are not messages. Each asserts a
 clean error and a bounded process, never a panic escaping the guard.
 
-**The golden corpus** (`src/corpus.rs`, `tests/golden/`) records what the
+**The golden corpus** (`src/corpus.rs`, `src/golden/`) records what the
 engine actually emits, one file per case, compared byte-for-byte. Unit tests
 assert *properties* — the table has two columns, the pipe is escaped — which
 means a change to blank-line handling or heading spacing can alter every
