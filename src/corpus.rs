@@ -270,6 +270,7 @@ fn zip_bytes() -> Vec<u8> {
     crate::fixtures::zip_of_text(&[("notes.txt", "A loose note.\n"), ("data.csv", "k,v\n1,2\n")])
 }
 
+#[cfg(feature = "pdf")]
 fn pdf_bytes() -> Vec<u8> {
     crate::fixtures::pdf(&[
         "EXECUTIVE SUMMARY",
