@@ -316,9 +316,11 @@ pub fn sniff_charset(bytes: &[u8]) -> String {
     if std::str::from_utf8(bytes).is_ok() {
         return "utf-8".to_owned();
     }
-    let mut det = chardetng::EncodingDetector::new();
+    let mut det = chardetng::EncodingDetector::new(chardetng::Iso2022JpDetection::Allow);
     det.feed(bytes, true);
-    det.guess(None, true).name().to_ascii_lowercase()
+    det.guess(None, chardetng::Utf8Detection::Allow)
+        .name()
+        .to_ascii_lowercase()
 }
 
 /// Remove guesses that repeat a (mimetype, extension) pair already seen,

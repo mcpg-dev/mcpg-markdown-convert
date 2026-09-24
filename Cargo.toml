@@ -1,6 +1,6 @@
 [package]
 name = "mcpg-markdown-convert"
-version = "0.1.0-beta.17"
+version = "0.1.0-beta.23"
 edition = "2024"
 license = "Apache-2.0"
 description = """
@@ -35,17 +35,17 @@ thiserror = "2"
 # Zip container: DOCX / PPTX / XLSX / EPUB / .zip all ride on it. No bzip2 or
 # zstd features — they pull C code and this crate must cross-compile to musl
 # and windows-gnu unaided.
-zip = { version = "2", default-features = false, features = ["deflate"] }
-quick-xml = "0.39"
+zip = { version = "8", default-features = false, features = ["deflate"] }
+quick-xml = "0.42"
 csv = "1"
 minijinja = "2"
 mime_guess = "2"
 # Magic-byte sniffing. Our stand-in for markitdown's Magika: no model to ship,
 # and the answer is reproducible across versions.
 infer = "0.22"
-chardetng = "0.1"
+chardetng = "1.0"
 encoding_rs = "0.8"
-base64 = "0.22"
+base64 = "0.23"
 blake3 = "1"
 # turndown.js-inspired HTML → Markdown, with a faithful mode that keeps HTML
 # for constructs Markdown cannot express (Apache-2.0).
@@ -61,7 +61,7 @@ kamadak-exif = { version = "0.6", optional = true }
 lofty = { version = "0.25", optional = true }
 # OLE compound-file container — the .msg envelope markitdown reads with
 # olefile. The MAPI property decoding on top is ours.
-cfb = { version = "0.14", optional = true }
+cfb = { version = "0.15", optional = true }
 
 [dev-dependencies]
 serde_json = "1"

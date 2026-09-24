@@ -102,16 +102,16 @@ pub fn read_events(
             }
             Ok(Event::Text(t)) => {
                 if let Some(top) = stack.last_mut() {
-                    let raw = t.decode().unwrap_or_default();
+                    let raw = t.into_inner();
                     top.own_text.push_str(raw.as_ref());
                     top.text.push_str(raw.as_ref());
                 }
             }
             Ok(Event::CData(t)) => {
                 if let Some(top) = stack.last_mut() {
-                    let raw = String::from_utf8_lossy(t.into_inner().as_ref()).into_owned();
-                    top.own_text.push_str(&raw);
-                    top.text.push_str(&raw);
+                    let raw = t.into_inner();
+                    top.own_text.push_str(raw.as_ref());
+                    top.text.push_str(raw.as_ref());
                 }
             }
             Ok(Event::End(_)) => {
@@ -144,9 +144,8 @@ pub fn read_events(
     Ok(())
 }
 
-fn local_name(raw: &[u8]) -> String {
-    let s = String::from_utf8_lossy(raw);
-    s.rsplit(':').next().unwrap_or(&s).to_ascii_lowercase()
+fn local_name(raw: &str) -> String {
+    raw.rsplit(':').next().unwrap_or(raw).to_ascii_lowercase()
 }
 
 fn attributes(e: &quick_xml::events::BytesStart<'_>) -> Vec<(String, String)> {
@@ -155,7 +154,7 @@ fn attributes(e: &quick_xml::events::BytesStart<'_>) -> Vec<(String, String)> {
         .map(|a| {
             (
                 local_name(a.key.as_ref()),
-                a.unescape_value()
+                a.normalized_value(quick_xml::XmlVersion::Implicit1_0)
                     .map(|v| v.into_owned())
                     .unwrap_or_default(),
             )
