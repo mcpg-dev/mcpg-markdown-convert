@@ -546,9 +546,13 @@ impl Converter for PptxConverter {
         let mut doc = Document::new();
         core_properties(&mut zip, &mut doc, cx);
 
+        // A name that does not decode is no slide part.
         let mut slides: Vec<(u32, String)> = zip
             .file_names()
-            .filter_map(|n| slide_number(n).map(|i| (i, n.to_owned())))
+            .filter_map(|n| {
+                let n = n.ok()?;
+                slide_number(&n).map(|i| (i, n.into_owned()))
+            })
             .collect();
         if slides.is_empty() {
             return Err(ConvertError::Malformed {

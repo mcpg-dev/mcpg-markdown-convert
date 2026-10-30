@@ -1,6 +1,6 @@
 [package]
 name = "mcpg-markdown-convert"
-version = "0.1.0-beta.31"
+version = "0.1.0-beta.32"
 edition = "2024"
 license = "Apache-2.0"
 description = """
@@ -35,7 +35,7 @@ thiserror = "2"
 # Zip container: DOCX / PPTX / XLSX / EPUB / .zip all ride on it. No bzip2 or
 # zstd features — they pull C code and this crate must cross-compile to musl
 # and windows-gnu unaided.
-zip = { version = "8", default-features = false, features = ["deflate"] }
+zip = { version = "9.1", default-features = false, features = ["deflate"] }
 quick-xml = "0.42"
 csv = "1"
 minijinja = "2"
@@ -52,7 +52,7 @@ blake3 = "1"
 htmd = { version = "0.5", optional = true }
 # Spreadsheets, including legacy .xls — covers markitdown's [xlsx] and [xls]
 # extras with one pure-Rust dep (MIT).
-calamine = { version = "0.36", optional = true }
+calamine = { version = "0.37", optional = true }
 # Text extraction only — no layout, no tables, no OCR (see the converter's
 # module docs). `lopdf` rides in through its re-export rather than as a second
 # direct dependency, so the two can never disagree on a version.

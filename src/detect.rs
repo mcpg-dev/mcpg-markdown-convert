@@ -181,7 +181,9 @@ fn sniff_zip(bytes: &[u8]) -> (&'static str, &'static str) {
         let Ok(entry) = zip.by_index_raw(i) else {
             continue;
         };
-        let name = entry.name().to_owned();
+        let Ok(name) = entry.name().map(std::borrow::Cow::into_owned) else {
+            continue;
+        };
         if name == "[Content_Types].xml" {
             has_ooxml_marker = true;
             continue;
@@ -347,7 +349,7 @@ mod tests {
         let mut buf = Vec::new();
         {
             let mut w = zip::ZipWriter::new(Cursor::new(&mut buf));
-            let opts: zip::write::FileOptions<'_, ()> = zip::write::FileOptions::default();
+            let opts = zip::write::SimpleFileOptions::default();
             for n in names {
                 w.start_file(*n, opts).unwrap();
                 w.write_all(b"x").unwrap();

@@ -19,8 +19,8 @@ pub(crate) fn zip_of(parts: &[(&str, &[u8])]) -> Vec<u8> {
     let mut buf = Vec::new();
     {
         let mut w = zip::ZipWriter::new(Cursor::new(&mut buf));
-        let opts: zip::write::FileOptions<'_, ()> =
-            zip::write::FileOptions::default().compression_method(zip::CompressionMethod::Deflated);
+        let opts = zip::write::SimpleFileOptions::default()
+            .compression_method(zip::CompressionMethod::Deflated);
         for (name, body) in parts {
             w.start_file(*name, opts).expect("start entry");
             w.write_all(body).expect("write entry");

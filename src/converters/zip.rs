@@ -89,7 +89,14 @@ impl Converter for ZipConverter {
                 let Ok(entry) = zip.by_index_raw(i) else {
                     continue;
                 };
-                (entry.name().to_owned(), entry.size(), entry.encrypted())
+                let Ok(name) = entry.name() else {
+                    doc.warn(Warning::new(
+                        WarningKind::SkippedMember,
+                        format!("member {i}: its name does not decode"),
+                    ));
+                    continue;
+                };
+                (name.into_owned(), entry.size(), entry.encrypted())
             };
             if name.ends_with('/') {
                 continue;
@@ -211,7 +218,7 @@ mod tests {
         let mut buf = Vec::new();
         {
             let mut w = zip::ZipWriter::new(Cursor::new(&mut buf));
-            let opts: zip::write::FileOptions<'_, ()> = zip::write::FileOptions::default()
+            let opts = zip::write::SimpleFileOptions::default()
                 .compression_method(zip::CompressionMethod::Deflated);
             for (name, body) in parts {
                 w.start_file(*name, opts).unwrap();
